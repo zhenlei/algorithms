@@ -1,0 +1,56 @@
+
+* Count all possible paths from top left to bottom right
+  from top left to bottom right is simplest, its demoe geeksforgeeks at [[https://www.geeksforgeeks.org/count-possible-paths-top-left-bottom-right-nxm-matrix/][HERE]]
+
+* count number of paths from left bottom to top right in a mxn matrix
+    from the cell you can only move to up and right.
+
+** the dummy method
+   The time complexity of this method is exponential. it's related to the depth of recursion
+   #+BEGIN_SRC python :results output
+     m = 3 # row number
+     n = 3 # column number
+
+     def read_path(r, c):
+         if (r == 1 or c == n -1):
+           return 1
+
+         return read_path(r - 1, c) + read_path(r, c + 1)
+
+     print(read_path(m, 0))
+   #+END_SRC
+
+** Dynamic Programming method(DP)
+   There are many overlapping subproblems, even a point's paths number has been
+   calculated, it will be recomputed again, so DP come in
+
+   #+BEGIN_SRC python :results output
+     # m number of rows
+     # n  number of columns
+     def num_of_path(m , n):
+         '''
+         Count number of paths from left bottom to top right in a mxn matrix,
+         from the cell you can only move to up and right.
+         '''
+
+         # create a 2D table to store results of subproblems
+         count = [[0 for i in range(n)] for j in range(m)]
+         # the most right column
+         for i in range(m):
+             count[i][n-1] = 1
+
+         # the most upper row
+         for i in range(n):
+             count[0][i] = 1
+
+
+         # keep in mind the end of range() can't be reached, in order to let j reach
+         # end "0", the end must be -1.
+         for i in range(1, m):
+             for j in range(n-2, -1, -1):
+                 count[i][j] = count[i-1][j] + count[i][j+1]
+
+         return count[m-1][0]
+
+     print(num_of_path(3, 3))
+   #+END_SRC
