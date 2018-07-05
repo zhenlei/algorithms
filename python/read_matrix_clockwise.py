@@ -2,7 +2,7 @@
 
 """
 this program is used to read the two demisional array (matrix) in clockwise, in this example, it's
-2 3 4 8 12 16 15 14 13 9 5 6 7 11 10
+1 2 3 4 5 6 12 18 17 16 15 14 13 7 8 9 10 11
 """
 
 # given matrix in spiral form
