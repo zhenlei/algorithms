@@ -5,66 +5,56 @@ this program is used to read the two demisional array (matrix) in clockwise, in 
 2 3 4 8 12 16 15 14 13 9 5 6 7 11 10
 """
 
-aa = [
-    [1, 2, 3, 4],
-    [5, 6, 7, 8],
-    [9, 10, 11, 12],
-    [13, 14, 15, 16],
-]
+# given matrix in spiral form
+def spiralPrint(m, n, a) :
+    k = 0; l = 0
 
-h = len(aa)
-l = len(aa[0])
+    ''' k - starting row index
+        m - ending row index
+        l - starting column index
+        n - ending column index
+        i - iterator '''
 
-# start from lenght, which means row
-loopl = 1
-#reverse and read row
-looplr = 0
-# read in height, which means column
-looph = 0
-#reverse and read column
-loophr = 0
-#length counter
-lcount = 0
-#height counter
-hcount = 0
-i = 0
-# init j to -1, as initial value need add 1
-j = -1
 
-# total number of elements, if not use counter, you need mark every element which has been read.
-counter=sum([len(line) for line in aa])
+    while (k < m and l < n) :
 
-while (counter > 0):
-    if (loopl == 1):
-        for j in range(j+1, l-lcount, 1):
-            print(aa[i][j])
-            counter -=1
-            if(j == l - lcount -1):
-                looph = 1
-                loopl = 0
+        # Print the first row from
+        # the remaining rows
+        for i in range(l, n) :
+            print(a[k][i], end = " ")
 
-    if (looplr == 1):
-        for j in range(j-1, lcount -1, -1):
-            print(aa[i][j])
-            counter -=1
-            if (j == lcount):
-                loophr = 1
-                looplr = 0
-                lcount +=1
-                hcount +=1
+        k += 1
 
-    if (loophr == 1):
-        for i in range(i-1, hcount -1, -1):
-            print(aa[i][j])
-            counter -=1
-            if (i == hcount):
-                loopl = 1
-                loophr = 0
+        # Print the last column from
+        # the remaining columns
+        for i in range(k, m) :
+            print(a[i][n - 1], end = " ")
 
-    if (looph == 1):
-        for i in range(i+1, h-hcount, 1):
-            print(aa[i][j])
-            counter -=1
-            if (i == h-hcount -1):
-                looplr = 1
-                looph = 0
+        n -= 1
+
+        # Print the last row from
+        # the remaining rows
+        if ( k < m) :
+
+            for i in range(n - 1, (l - 1), -1) :
+                print(a[m - 1][i], end = " ")
+
+            m -= 1
+
+        # Print the first column from
+        # the remaining columns
+        if (l < n) :
+            for i in range(m - 1, k - 1, -1) :
+                print(a[i][l], end = " ")
+
+            l += 1
+
+# Driver Code
+a = [ [1, 2, 3, 4, 5, 6],
+      [7, 8, 9, 10, 11, 12],
+      [13, 14, 15, 16, 17, 18] ]
+
+R = 3; C = 6
+spiralPrint(R, C, a)
+
+# This code is contributed by Nikita Tiwari.
