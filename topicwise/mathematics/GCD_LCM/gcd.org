@@ -1,0 +1,46 @@
+* What's GCD(最大公约数)?
+  GCD (Greatest Common Divisor) or HCF (Highest Common Factor) of two numbers is
+  the largest number that divides both of them.
+
+* Euclidean algorithm of GCD
+  Euclidean algorithm is efficient. The idea is if we subtract smaller number
+  from larger (we reduce larger number), GCD doesn’t change. So if we keep
+  subtracting repeatedly the larger of two, we end up with GCD. There is a big
+  drawback that if one of number is very small, such as 1. the algorithm's time
+  complexity is very bad.
+  Time Complexity: O(max(a,b))
+  #+BEGIN_SRC python :results output
+    def gcd(a, b):
+        '''
+        compute greatest command dividsor
+        '''
+
+        if (a == 0  or b == 0):
+            return False
+
+        if (a == b):
+            return a
+
+        print(a,b)
+        if (a > b):
+            return gcd(a-b, b)
+        return gcd(a, b-a)
+
+    print(gcd(90, 36))
+  #+END_SRC
+
+* Optimized Euclidean algorithm
+  Euclidean algorithm can be optimized. Instead of subtraction, if we divide
+  smaller numbers, the algorithm stops when we find remainder 0.
+  Time Complexity: O(Log min(a, b))
+  #+BEGIN_SRC python :results output
+    def gcd(a, b):
+        if (a == 0):
+            return b
+
+        print(a, b)
+        return gcd(b%a, a)
+    print(gcd(90, 36))
+  #+END_SRC
+* reference
+  - [[https://www.geeksforgeeks.org/euclidean-algorithms-basic-and-extended/][Euclidean algorithms (Basic and Extended)]]

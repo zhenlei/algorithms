@@ -1,0 +1,128 @@
+* get the intersection point of two linked lists
+    refer to [[https://www.geeksforgeeks.org/write-a-function-to-get-the-intersection-point-of-two-linked-lists/][here]]
+** mark visited nodes
+   - require modifications on linked list structure, add visited flag with each node.
+   - use hash
+     Time Complexity: O(m+n)
+     Auxiliary Space: O(m)
+     #+BEGIN_SRC python :results output
+       class Node:
+           def __init__(self, data):
+               self.data = data
+               self.next = None
+
+       class LinkList:
+           def __init__(self, node=None):
+               self.head = node
+
+           def find_intersection(self, ll):
+               visited = set()
+
+               node = ll.head
+               while (node):
+                   visited.add(node)
+                   node = node.next
+
+               node = self.head
+               while (node):
+                   if node in visited:
+                       return node
+                   node = node.next
+
+       ll = LinkList()
+
+       node = Node(3)
+       ll.head = node
+
+       node = Node(4)
+       ll.head.next = node
+
+       node = Node(5)
+       ll.head.next.next = node
+
+       node = Node(6)
+       ll.head.next.next.next = node
+       ll1 = LinkList()
+       ll1.head = node
+
+       node = Node(7)
+       ll1.head.next = node
+
+       node = ll.find_intersection(ll1)
+       print(node.data)
+     #+END_SRC
+** use difference of node counts
+    Time Complexity: O(m+n)
+    Auxiliary Space: O(1)
+   1) Get count of the nodes in the first list, let count be c1.
+   2) Get count of the nodes in the second list, let count be c2.
+   3) Get the difference of counts d = abs(c1 – c2)
+   4) Now traverse the bigger list from the first node till d nodes.
+   5) if the d node of bigger list is equal to head of less list, the d node is
+      intersection point, else there is no intersection.
+    #+BEGIN_SRC python :results output
+
+      class Node:
+          def __init__(self, data):
+              self.data = data
+              self.next = None
+
+      class LinkList:
+          def __init__(self, node=None):
+              self.head = node
+
+          def count(self):
+              node = self.head
+              node_num = 0
+              while (node):
+                  node_num += 1
+                  node = node.next
+              return node_num
+
+          def find_intersection(self, ll):
+              c1 = self.count()
+              c2 = ll.count()
+
+              if (c1 > c2):
+                  diff = c1 - c2
+                  node = self.head
+                  while (diff):
+                      node = node.next
+                      diff -= 1
+                  if (node == ll.head):
+                      return node
+                  else:
+                      return None
+              else:
+                  diff = c2 - c1
+                  node = ll.head
+                  while (diff):
+                      node = node.next
+                      diff -= 1
+                  if (node == self.head):
+                      return node
+                  else:
+                      return None
+
+      ll = LinkList()
+
+      node = Node(3)
+      ll.head = node
+
+      node = Node(4)
+      ll.head.next = node
+
+      node = Node(5)
+      ll.head.next.next = node
+
+      node = Node(6)
+      ll.head.next.next.next = node
+      ll1 = LinkList()
+      ll1.head = node
+
+      node = Node(7)
+      ll1.head.next = node
+
+      node = ll.find_intersection(ll1)
+      print(node)
+    #+END_SRC

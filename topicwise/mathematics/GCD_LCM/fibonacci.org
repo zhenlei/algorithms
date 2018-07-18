@@ -1,0 +1,180 @@
+* fibonacci
+  This page is based on [[https://www.geeksforgeeks.org/program-for-nth-fibonacci-number/][here]], and do some optimization.
+  By definition, the first two numbers in Fibonacci sequence are either 0 and 1,
+  or 1 and 1, depending on the chosen starting point, each sequence number is
+  sum of the preceding ones.
+* simple solutions
+  the most intuitive method, but very very slow.
+  Time Complexity: exponential
+  #+BEGIN_SRC python :results output
+    def fibonacci(n):
+        global counter
+        counter +=1
+        if (n == 0 or n == 1):
+            return n
+        return fibonacci(n-1) + fibonacci(n-2)
+
+    counter = 0
+    print(fibonacci(20))
+    print(counter)
+  #+END_SRC
+* linear time solution with space optimized method
+  bottom up method, can print out the whole fibonacci sequence and return the fibonacci number
+  Time Complexity: O(n)
+  Extra Space: O(1)
+  #+BEGIN_SRC python :results output
+    def fibonacci(n):
+        a = 0
+        b = 1
+
+        for i in range(n-1):
+            print(a)
+            a, b = b, a+b
+        return a
+
+    print(fibonacci(5))
+  #+END_SRC
+* linear time solution with Dynamic Programming
+  Avoid repreated work by storing Fibonacci number already calculated so far.
+  Time Complexity: O(n)
+  Extra Space: O(n)
+  - As python don't support static variable, use function attribute ~FibArray~
+    to achieve that. ~FibArray~ must be initialized.
+    #+BEGIN_SRC python :results output
+     def fibonacci(n):
+         FibArray = fibonacci.FibArray
+
+         while len(FibArray) < n + 1:
+             FibArray.append(0)
+
+         if n <= 1:
+            return n
+         else:
+            if FibArray[n - 1] ==  0:
+                FibArray[n - 1] = fibonacci(n - 1)
+
+            if FibArray[n - 2] ==  0:
+                FibArray[n - 2] = fibonacci(n - 2)
+
+            FibArray[n] = FibArray[n - 2] + FibArray[n - 1]
+         return FibArray[n]
+
+     # ~FibArray~ must be initialized.
+     fibonacci.FibArray = []
+     print(fibonacci(100))
+   #+END_SRC
+
+  - Optimize away the attribute initialization procedure by using decoration
+    #+BEGIN_SRC python :results output
+      # in this way, decorator should be used as @static_vars("FibArray", [])
+      # def static_vars(var, val):
+      #     def decorate(func):
+      #         setattr(func, var, val)
+      #         return func
+      #     return decorate
+
+      # more nice version of first one, using decorator with argument
+      def static_vars(**kwargs):
+          def decorate(func):
+              # using decorator to setattr directly, ignore wraper
+              for k in kwargs:
+                  setattr(func, k, kwargs[k])
+              # only return func without extending it
+              return func
+          return decorate
+
+      @static_vars(FibArray=[])
+      def fibonacci(n):
+          FibArray = fibonacci.FibArray
+
+          while len(FibArray) < n + 1:
+              FibArray.append(0)
+
+          if n <= 1:
+             return n
+          else:
+             if FibArray[n - 1] ==  0:
+                 FibArray[n - 1] = fibonacci(n - 1)
+
+             if FibArray[n - 2] ==  0:
+                 FibArray[n - 2] = fibonacci(n - 2)
+
+             FibArray[n] = FibArray[n - 2] + FibArray[n - 1]
+          return FibArray[n]
+
+      print(fibonacci(5))
+    #+END_SRC
+* using power of matrix
+  This relies on the fact that we n times multiply the Matrix M = {{1, 1},{1,
+  0}} to itself(in other words calculate Power(M, n)), then we we get (n+1)
+  fibonacci number as the element at row and column(0,0) at resultant matrix.
+
+  The matrix representation gives the following expression for Fibonacci number:
+  [[https://www.geeksforgeeks.org/wp-content/uploads/fibonaccimatrix.png][click to get image]]
+
+  Time Complexity: O(n)
+  Extra Space: O(n)
+  #+BEGIN_SRC python :results output
+    def multiply(x, y):
+        a = x[0][0]*y[0][0] + x[0][1]*y[1][0]
+        b = x[0][0]*y[0][1] + x[0][1]*y[1][1]
+        c = x[1][0]*y[0][0] + x[1][1]*y[1][0]
+        d = x[1][0]*y[0][1] + x[1][1]*y[1][1]
+
+        x[0][0] = a
+        x[0][1] = b
+        x[1][0] = c
+        x[1][1] = d
+
+    def power(m, n):
+        t = [row[:] for row in m]
+
+        for i in range(n-1):
+            multiply(m, t)
+
+    def fibonacci(n):
+        m = [[1,1],[1,0]]
+        power(m, n-1)
+
+        return m[0][0]
+
+    print(fibonacci(10))
+  #+END_SRC
+
+* fastest Dynamic Programming solution(using power of matrix)
+  this optimization method is same as [[https://www.geeksforgeeks.org/write-a-c-program-to-calculate-powxn/][here]]
+  Time Complexity: O(n)
+  Extra Space: O(log(n))
+
+  #+BEGIN_SRC python :results output
+    def multiply(x, y):
+        a = x[0][0]*y[0][0] + x[0][1]*y[1][0]
+        b = x[0][0]*y[0][1] + x[0][1]*y[1][1]
+        c = x[1][0]*y[0][0] + x[1][1]*y[1][0]
+        d = x[1][0]*y[0][1] + x[1][1]*y[1][1]
+
+        x[0][0] = a
+        x[0][1] = b
+        x[1][0] = c
+        x[1][1] = d
+
+    def power(x, y):
+        m = [row[:] for row in x]
+
+        if (y == 1):
+            return x
+
+        # use "//" to keep the result to be integer
+        power(x, y//2)
+        multiply(x, x)
+        if (y % 2):
+            x = multiply(x, m)
+
+    def fibonacci(n):
+        m = [[1,1],[1,0]]
+        power(m, n-1)
+
+        return m[0][0]
+
+    print(fibonacci(10))
+  #+END_SRC

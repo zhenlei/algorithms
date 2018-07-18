@@ -35,7 +35,6 @@ def spiralPrint(m, n, a) :
         # Print the last row from
         # the remaining rows
         if ( k < m) :
-
             for i in range(n - 1, (l - 1), -1) :
                 print(a[m - 1][i], end = " ")
 

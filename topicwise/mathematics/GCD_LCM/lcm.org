@@ -1,0 +1,94 @@
+* What's LCM(最小公倍数)?
+  LCM(Least Common Multiple) of two numbers is smallest number which can be
+  divided by both numbers.
+
+* find lcm of two numbers
+  A simple solution is to find all prime factors of both numbers, then find
+  union of all factors present in both numbers. Finally return product of
+  elements in union.
+
+  An efficient solution is based on below formula for LCM of two numbers ‘a’
+  and ‘b’.
+  #+BEGIN_QUOTE
+   a x b = LCM(a, b) * GCD (a, b)
+
+   LCM(a, b) = (a x b) / GCD(a, b)
+  #+END_QUOTE
+
+  #+BEGIN_SRC python
+    def gcd(a, b):
+        '''
+        compute greatest command dividsor
+        '''
+
+        if (a == 0  or b == 0):
+            return False
+
+        if (a == b):
+            return a
+
+        print(a,b)
+        if (a > b):
+            return gcd(a-b, b)
+        return gcd(a, b-a)
+
+    def lcm(a, b):
+
+        return (a*b) / gcd(a, b)
+
+    print(lcm(38, 28))
+  #+END_SRC
+
+* find LCM of given array elements
+  Given an array of n numbers, find LCM of it.
+  #+BEGIN_QUOTE
+  Input : {1, 2, 8, 3}
+  Output : 24
+  #+END_QUOTE
+
+  Let's say we have array arr[] that contains n elements whose LCM need to be calculated.
+  1. Initialize ans = arr[0].
+  2. Iterate over all the elements of the array i.e. from i = 1 to i = n-1
+
+     At the ith iteration ans = LCM(arr[0], arr[1], …….., arr[i-1]). This can
+     be done easily as LCM(arr[0], arr[1], …., arr[i]) = LCM(ans, arr[i]). Thus
+     at i’th iteration we just have to do ans = LCM(ans, arr[i]) = ans x arr[i] / gcd(ans, arr[i])
+
+   Below is implementation of abover algorithm:
+   #+BEGIN_SRC python :results output
+     def gcd(a, b):
+         '''
+         non-recursive version of gcd
+         '''
+         if (a > b):
+             num = a
+             den = b
+         else:
+             num = b
+             den = a
+
+         rem = num % den
+         while(rem != 0):
+             num = den
+             den = rem
+             rem = num % den
+         return den
+
+     def lcm(a, b):
+         return (a * b) / gcd(a, b)
+
+     num = [2, 7, 3, 9, 4]
+
+     num1 = num[0]
+     num2 = num[1]
+     l = lcm(num1, num2)
+
+     for i in range(2, len(num)):
+         l = lcm(l, num[i])
+
+     print(l)
+   #+END_SRC
+
+* reference
+  - [[https://www.geeksforgeeks.org/program-to-find-lcm-of-two-numbers/][find lcm of two numbers]]
+  - [[https://www.geeksforgeeks.org/lcm-of-given-array-elements/][lcm of given array elements]]

@@ -1,0 +1,38 @@
+* memmove()
+  function prototype: void myMemMove(void *dest, void *src, size_t n)
+  description: same as memcpy, except that it can handle source and destination addresses overlapping case.
+
+**  naive solution
+   use temp array to avoid overlapping
+   #+BEGIN_SRC c
+     void *memmove(void *dest, void *src, size_t n)
+     {
+         if (dest == NULL || src == NULL)
+             return NULL;
+
+         char *csrc = (char *)src;
+         char *cdest = (char *)dest;
+
+         char *temp = new char[n];
+         for (int i=0; i<n; i++)
+             temp[i] = src[i];
+
+         for (int i=0; i<n; i++)
+             dest[i] = temp[i];
+
+         delete [] temp;
+     }
+   #+END_SRC
+
+** optimization solution
+
+   #+BEGIN_QUOTE
+   By comparing the src and the dst addresses you should be able to find if they overlap.
+
+   – If they do not overlap, you can copy in any direction
+   – If they do overlap, find which end of dest overlaps with the source and choose the direction of copy accordingly.
+   – If the beginning of dest overlaps, copy from end to beginning
+   – If the end of dest overlaps, copy from beginning to end
+   – Another optimization would be to copy by word size. Just be careful to handle the boundary conditions.
+   – A further optimization would be to use vector instructions for the copy since they’re contiguous.
+   #+END_QUOTE
