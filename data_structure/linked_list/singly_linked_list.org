@@ -1,3 +1,304 @@
+
+* linked list
+
+** Advantage over array
+   - Dynamic size
+   - Easy of insertion/deletion
+
+** Drawbacks
+   - Random access is not allowed.
+   - Extra memory is used to store meta data, when data field is very small, it's very obvisous
+   - Not cache friendly.
+
+* simple linked list implementation
+  singly linked list is represented by a pointer to the first node of linked
+  list, each node consists of at least two parts:
+
+  - the implementation has an iterator, list can be traversed using for loop.
+  - push method will add a new node before head of list
+  - insertAfter method will insert node after the given prev_node
+  - append method will add a new node after the last node
+  #+BEGIN_SRC python :results output
+    class Node:
+        def __init__(self, data):
+            self.data = data
+            self.next = None
+
+    class LinkedList:
+        def __init__(self):
+            self.head = None
+            self.current = None
+
+        def __iter__(self):
+            '''
+            return a iterator object with __next__ method, which is itself
+            '''
+
+            # init the iterator itself
+            self.current = self.head
+            return self
+
+        def __next__(self):
+            '''
+            __next__ will be called whenever next() method is called.
+            '''
+
+            # signal to caller that iteration is exhausted
+            if (self.current == None):
+                raise StopIteration
+
+            data = self.current.data
+
+            # prepare for the next iteration
+            self.current = self.current.next
+
+            return data
+
+        def push(self, data):
+            '''
+            Add a new node before the head of list
+            '''
+            new_node = Node(data)
+            new_node.next = self.head
+
+            self.head = new_node
+
+        def insertAfter(self, prev_node, new_data):
+            '''
+            Insert a new node after the given prev_node
+            '''
+            if prev_node is None:
+                print("the given node doesn't exist")
+
+            # make new node and replicate prev_node's next
+            new_node = Node(new_data)
+            new_node.next = prev_node.next
+
+            #make new_node the next of prev_node
+            prev_node.next = new_node
+
+        def append(self, new_data):
+            '''
+            Add a new node after the last node
+            '''
+
+            new_node = Node(new_data)
+
+            if self.head is None:
+                self.head = new_node
+
+            last = self.head
+            while (last.next):
+                last = last.next
+
+            last.next = new_node
+
+    l = LinkedList()
+
+    l.push(4)
+    l.push(3)
+    l.push(1)
+    l.insertAfter(l.head, 2)
+    l.append(5)
+    l.append(6)
+    l.append(7)
+
+    for i in l:
+        print(i)
+  #+END_SRC
+* Reverse a linked list
+  Reverse the list by changing the links between nodes.
+  - refer to [[https://www.geeksforgeeks.org/reverse-a-linked-list/][geeksforgeeks]]
+
+  - iterative method
+    #+BEGIN_QUOTE
+    1. Initialize three pointers prev as NULL, curr as head and next as NULL.
+    2. Iterate trough the linked list. In loop, do following.
+        // Before changing next of current,
+        // store next node
+        next = curr->next
+        // Now change next of current
+        // This is where actual reversing happens
+        curr->next = prev
+
+        // Move prev and curr one step forward
+        prev = curr
+        curr = next
+    #+END_QUOTE
+
+    #+BEGIN_SRC python :results output
+      class Node:
+          def __init__(self, data):
+              self.data = data
+              self.next = None
+
+      class LinkedList:
+          def __init__(self):
+              self.head = None
+              self.current = None
+
+          def push(self, data):
+              '''
+              Add a new node before the head of list
+              '''
+              new_node = Node(data)
+              new_node.next = self.head
+
+              self.head = new_node
+
+          def printAll(self):
+              tmp = self.head
+              while (tmp):
+                  print(tmp.data, end = ' ')
+                  tmp = tmp.next
+              print("the list end")
+
+
+          def reverse(self):
+              '''
+              reverse linked list in place
+              '''
+
+              prev = None
+              curr = self.head
+              next = self.head.next
+              while (curr):
+                  next = curr.next
+                  curr.next = prev
+                  prev = curr
+                  curr = next
+              self.head = prev
+
+      l = LinkedList()
+
+      l.push(6)
+      l.push(5)
+      l.push(4)
+      l.push(3)
+      l.push(1)
+
+      l.printAll()
+      l.reverse()
+      l.printAll()
+    #+END_SRC
+
+    #+RESULTS:
+
+  - recursive method
+    #+BEGIN_QUOTE
+     1) Divide the list in two parts - first node and rest of the linked list.
+     2) Call reverse for the rest of the linked list.
+     3) Link rest to first.
+     4) Fix head pointer
+    #+END_QUOTE
+
+* Detect loop in a linked list
+  Given a linked list, check if it has a loop or not.
+
+  - Floyd's Cycle-Finding Algorithm
+    This is fastest method, and need least auxiliary space. Traverse list
+    through two pointers, move one pointer by one, move another pointer by two.
+    If these pointers meet at some node, there's a loop. otherwise list doesn't
+    have loop.
+    Time Complexity: O(1)
+    Auxiliary space: O(1)
+    #+BEGIN_SRC python :results output
+      class Node:
+          def __init__(self, data):
+              self.data = data
+              self.next = None
+
+      class LinkedList:
+          def __init__(self):
+              self.head = None
+
+          def detectLoop(self):
+              slowp = self.head
+              fastp = self.head
+              while (slowp and fastp and fastp.next):
+                  if (slowp == fastp):
+                      return True
+                  slowp = slowp.next
+                  fastp = fastp.next.next
+              return False
+
+          def push(self, data):
+              '''
+              Add a new node before the head of list
+              '''
+              new_node = Node(data)
+              new_node.next = self.head
+
+              self.head = new_node
+
+      l = LinkedList()
+
+      l.push(6)
+      l.push(5)
+      l.push(4)
+      l.push(3)
+      l.push(1)
+
+      # simulate the loop
+      l.head.next.next.next.next = l.head
+
+      if (l.detectLoop()):
+          print("loop found")
+      else:
+          print("no loop")
+    #+END_SRC
+  - Using Hashing
+    Traverse the list one by one and put node address in a Hash table, At any
+    point, if next of current node same to any in Hash table.
+    #+BEGIN_SRC python :results output
+      class Node:
+          def __init__(self, data):
+              self.data = data
+              self.next = None
+
+      class LinkedList:
+          def __init__(self):
+              self.head = None
+              self.current = None
+
+          def push(self, data):
+              '''
+              Add a new node before the head of list
+              '''
+              new_node = Node(data)
+              new_node.next = self.head
+
+              self.head = new_node
+
+          def detectLoop(self):
+              s = set()
+
+              tmp = self.head
+              while (tmp):
+                  if tmp in s:
+                      return True
+                  s.add(tmp)
+                  tmp = tmp.next
+
+              return False
+
+      l = LinkedList()
+
+      l.push(6)
+      l.push(5)
+      l.push(4)
+      l.push(3)
+      l.push(1)
+
+      # simulate the loop
+      l.head.next.next.next.next = l.head
+
+      if (l.detectLoop()):
+          print("loop found")
+      else:
+          print("no loop")
+    #+END_SRC
+
 * get the intersection point of two linked lists
     refer to [[https://www.geeksforgeeks.org/write-a-function-to-get-the-intersection-point-of-two-linked-lists/][here]]
 ** mark visited nodes

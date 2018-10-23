@@ -1,0 +1,14 @@
+* Running Time
+  - Depends on input(eg, already sorted)
+  - Depends on input size
+    + Parameterize on input size
+  - Asymptotic notation(渐进符号)
+    + Θ notation: drop lower oder terms, ignore leading constant.
+  
+* Kinds of analysis
+  - Worst case (usually)
+    T(n) = max time on any input of size n
+  - Average case(sometimes)
+    T(n) = expected time over all input of size n
+    Need assumption of statistics of input distribution
+  - Best case (bogus, useless)

@@ -1,0 +1,23 @@
+* analysis
+  use element j as a key, there is a invariant that is maintained during loop
+  through the array. the invariant is part that is sorted. the goal each time
+  through the loop is to increment the invariant.
+  
+* code
+  #+BEGIN_SRC python :results output
+    arr = [9, 2, 33, 10, 1, 4, 6, 9, 8]
+
+    def insert_sort(arr):
+        i = 0
+        for j in range(1, len(arr)):
+            for i in range(0, j):
+                if (arr[j] < arr[i]):
+                    k = j
+                    while(i < k):
+                        (arr[k], arr[k-1]) = (arr[k-1], arr[k])
+                        k -= 1
+                    break
+
+    insert_sort(arr)
+    print(arr)
+  #+END_SRC
