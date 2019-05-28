@@ -12,3 +12,4 @@
     T(n) = expected time over all input of size n
     Need assumption of statistics of input distribution
   - Best case (bogus, useless)
+    should never use this method
