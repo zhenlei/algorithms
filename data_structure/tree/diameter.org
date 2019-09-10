@@ -1,0 +1,38 @@
+* time complexity of O(n^2)
+
+  #+BEGIN_SRC python #results output
+    class Node(object):
+        def __init__(self, data=None):
+            self.left = None
+            self.right = None
+            self.data = data
+
+    def height(node):
+        if node == None:
+            return 0
+
+        l_height = height(node.left)
+        r_height = height(node.right)
+        print('l', l_height, 'r', r_height)
+
+        return max(l_height, r_height) + 1
+
+
+    def diameter(node, ans):
+        if node == None:
+            return 0
+
+        l_height = diameter(node.left, ans)
+        r_height = diameter(node.right, ans)
+        ans[0] = max(l_height, r_height, ans[0])
+        print('l', l_height, 'r', r_height, 'ans', ans[0])
+
+        return max(l_height, r_height) + 1
+
+    tree = Node(1)
+    tree.left = Node(2)
+    tree.right = Node(3)
+    tree.left.right = Node(4)
+
+    print(height(tree))
+  #+END_SRC

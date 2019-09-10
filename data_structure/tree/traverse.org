@@ -1,0 +1,76 @@
+* in-order
+  #+BEGIN_SRC python :results output
+    class Node(object):
+        def __init__(self, val):
+            self.data = val
+            self.left = None
+            self.right = None
+
+
+    def in_order(root, l):
+        if not root:
+            return
+        in_order(root.left, l)
+        l.append(root.data)
+        in_order(root.right, l)
+
+
+    root = Node(20)
+    root.left = Node(8)
+    root.right = Node(22)
+    root.left.left = Node(4)
+    root.left.right = Node(12)
+    root.left.right.left = Node(10)
+    root.left.right.right = Node(14)
+
+    in_list = []
+    in_order(root, in_list)
+    print(in_list)
+  #+END_SRC
+
+  #+RESULTS:
+  : [4, 8, 10, 12, 14, 20, 22]
+* level order
+  #+BEGIN_SRC python :results output
+    class Node(object):
+        def __init__(self, val):
+            self.data = val
+            self.left = None
+            self.right = None
+
+
+    root = Node(20)
+    root.left = Node(8)
+    root.right = Node(22)
+    root.left.left = Node(4)
+    root.left.right = Node(12)
+    root.left.right.left = Node(10)
+    root.left.right.right = Node(14)
+
+    def level_order(root):
+        s = []
+        if not root:
+            return None
+
+        i = 0
+        s.append(root)
+        n = root
+        while n:
+            if n.left:
+                s.append(n.left)
+            if n.right:
+                s.append(n.right)
+            i += 1
+            n = s[i] if i < len(s) else None
+
+        return s
+
+    ret = level_order(root)
+    print([i.data for i in ret])
+  #+END_SRC
+
+  #+RESULTS:
+  : [20, 8, 22, 4, 12, 10, 14]
+
+* get height of binary tree using inorder and level order traversal
+  refer to [[https://www.geeksforgeeks.org/calculate-height-of-binary-tree-using-inorder-and-level-order-traversal/][here]]
